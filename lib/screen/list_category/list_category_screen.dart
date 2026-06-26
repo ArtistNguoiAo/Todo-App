@@ -10,6 +10,11 @@ class ListCategoryScreen extends StatefulWidget {
 class _ListCategoryScreenState extends State<ListCategoryScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      backgroundColor: Color(0xFFFFFDD0),
+      body: Center(
+        child: Text("List category screen")
+      )
+    );
   }
 }
