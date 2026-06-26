@@ -4,12 +4,17 @@ class ListNoteScreen extends StatefulWidget {
   const ListNoteScreen({super.key});
 
   @override
-  State<ListNoteScreen> createState() => _ListNoteScreenState();
+  State<ListNoteScreen> createState() => ListNoteScreenState();
 }
 
-class _ListNoteScreenState extends State<ListNoteScreen> {
+class ListNoteScreenState extends State<ListNoteScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+        backgroundColor: Color(0xFFFFFDD0),
+        body: Center(
+            child: Text("List note screen")
+        )
+    );
   }
 }
