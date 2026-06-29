@@ -11,7 +11,7 @@ class ListNoteScreenState extends State<ListNoteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFFFFFDD0),
+        backgroundColor: Color(0xFFF6F5F0),
         body: Center(
             child: Text("List note screen")
         )
