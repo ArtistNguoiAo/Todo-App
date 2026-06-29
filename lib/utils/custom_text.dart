@@ -8,16 +8,16 @@ class AppTextStyles {
     letterSpacing: 0.5,
   );
 
-  static const TextStyle heading2 = TextStyle(
+  static TextStyle heading2({Color color = Colors.black87}) => TextStyle(
     fontSize: 24.0,
     fontWeight: FontWeight.bold, // Semi-bold
-    color: Colors.black87,
+    color: color,
   );
 
-  static const TextStyle bodyLarge = TextStyle(
+  static TextStyle bodyLarge({Color color = Colors.black87}) => TextStyle(
     fontSize: 16.0,
-    fontWeight: FontWeight.normal,
-    color: Colors.black,
+    fontWeight: FontWeight.bold,
+    color: color,
     height: 1.5, // Line height
   );
 
