@@ -19,8 +19,8 @@ class SaveButton extends StatelessWidget{
           borderRadius: BorderRadius.circular(16),
         ),
         child: InkWell(
-          child: Center(child: Text(text, style: AppTextStyles.buttonText,)),
           onTap: onTap,
+          child: Center(child: Text(text, style: AppTextStyles.buttonText,)),
         ),
       ),
     );
