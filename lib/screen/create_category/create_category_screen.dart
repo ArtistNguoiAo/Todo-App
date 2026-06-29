@@ -36,7 +36,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
         backgroundColor: Color(0xFFF6F5F0),
         automaticallyImplyLeading: false,
         leading: _backButton(),
-        title: Text(StringUtils.new_catalog, style: AppTextStyles.heading2(),),
+        title: Text(StringUtils.newCatalog, style: AppTextStyles.heading2(),),
         actions: [
           SaveButton(
             text: StringUtils.create,
@@ -55,10 +55,10 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
           children: [
             _boxCatalog(),
             SizedBox(height: 16,),
-            Text(StringUtils.catalog_name, style: AppTextStyles.bodyLarge(color: Color(0xFF858076)),),
+            Text(StringUtils.catalogName, style: AppTextStyles.bodyLarge(color: Color(0xFF858076)),),
             SizedBox(height: 8,),
             CustomTextField(
-                hintText: StringUtils.eg_catalog,
+                hintText: StringUtils.egCatalog,
                 controller: _nameController,
                 onChanged: (text) {
                   setState(() {});
@@ -117,7 +117,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
           ),
           SizedBox(height: 8,),
           Text(
-              _nameController.text.isEmpty ? StringUtils.catalog_name_lc : _nameController.text,
+              _nameController.text.isEmpty ? StringUtils.catalogNameLc : _nameController.text,
               style: AppTextStyles.heading2(color: _selectedColor)
           ),
         ],
