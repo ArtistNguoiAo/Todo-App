@@ -53,7 +53,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _BoxCatalog(),
+            _boxCatalog(),
             SizedBox(height: 16,),
             Text(StringUtils.catalog_name, style: AppTextStyles.bodyLarge(color: Color(0xFF858076)),),
             SizedBox(height: 8,),
@@ -67,7 +67,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
             SizedBox(height: 16,),
             Text(StringUtils.color, style: AppTextStyles.bodyLarge(color: Color(0xFF858076)),),
             SizedBox(height: 8,),
-            _BoxColors(),
+            _boxColors(),
           ],
         ),
       )
@@ -93,7 +93,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
     );
   }
   
-  Widget _BoxCatalog(){
+  Widget _boxCatalog(){
     return AnimatedContainer(
       duration: Duration(milliseconds: 250),
       width: double.infinity,
@@ -125,7 +125,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
     );
   }
 
-  Widget _BoxColors(){
+  Widget _boxColors(){
     return Container(
       width: double.infinity,
       height: 180,
