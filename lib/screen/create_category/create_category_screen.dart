@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:todo_app/database/database.dart';
+import 'package:todo_app/model/category.dart';
 import 'package:todo_app/utils/color_utils.dart';
 import 'package:todo_app/utils/custom_text.dart';
 import 'package:todo_app/utils/custom_widgets.dart';
@@ -41,7 +44,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
           SaveButton(
             text: StringUtils.create,
             onTap: _nameController.text.trim().isEmpty ? null : (){
-              Navigator.pop(context);
+              _saveCategory();
             },
             color: _nameController.text.trim().isEmpty ? Colors.red.withOpacity(0.4) : Colors.red,
           ),
@@ -171,6 +174,19 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
         }
       ),
     );
+  }
+
+  void _saveCategory() async{
+    final newCategory = Category(
+        id: 0,
+        name: _nameController.text.trim(),
+        color: _selectedColor.value.toRadixString(16),
+        createdAt: DateTime.now().toIso8601String(),
+    );
+
+    await AppDatabase.instance.insertCategory(newCategory);
+
+    Navigator.pop(context, true);
   }
 }
 

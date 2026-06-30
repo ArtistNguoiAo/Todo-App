@@ -70,21 +70,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      floatingActionButton: Container(
-        margin: EdgeInsets.only(bottom: 120, right: 20),
-        width: 70,
-        height: 70,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: FloatingActionButton(
-          onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) => CreateCategoryScreen() ));},
-          backgroundColor: Colors.red,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          elevation: 6,
-          child: const Icon(Icons.add, color: Colors.white, size: 60),
-        ),
-      ),
     );
   }
 

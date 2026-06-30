@@ -9,4 +9,5 @@ class StringUtils{
   static final catalogName = 'TÊN DANH MỤC';
   static final color = 'MÀU SẮC';
   static final egCatalog = 'Ví dụ: Công việc, Cá nhân...';
+  static final appDB = 'app_database.db';
 }
