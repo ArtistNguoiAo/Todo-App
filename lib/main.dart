@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/screen/home/home_screen.dart';
-import 'package:todo_app/screen/create_category/create_category_screen.dart';
 
 void main() {
   runApp(const TodoApp());

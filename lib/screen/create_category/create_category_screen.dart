@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:todo_app/database/database.dart';
-import 'package:todo_app/model/category.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/screen/create_category/cubit/create_category_cubit.dart';
 import 'package:todo_app/utils/color_utils.dart';
 import 'package:todo_app/utils/custom_text.dart';
 import 'package:todo_app/utils/custom_widgets.dart';
@@ -15,20 +14,6 @@ class CreateCategoryScreen extends StatefulWidget {
 }
 
 class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
-  late Color _selectedColor;
-  final TextEditingController _nameController = TextEditingController();
-
-  @override
-  void initState(){
-    super.initState();
-    _selectedColor = ColorUtils.red;
-  }
-
-  @override
-  void dispose(){
-    _nameController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +26,19 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
         leading: _backButton(),
         title: Text(StringUtils.newCatalog, style: AppTextStyles.heading2(),),
         actions: [
-          SaveButton(
-            text: StringUtils.create,
-            onTap: _nameController.text.trim().isEmpty ? null : (){
-              _saveCategory();
-            },
-            color: _nameController.text.trim().isEmpty ? Colors.red.withOpacity(0.4) : Colors.red,
-          ),
+          BlocBuilder<CreateCategoryCubit, CreateCategoryState>(
+              builder: (context, state){
+                return SaveButton(
+                  text: StringUtils.create,
+                  onTap: state.name.trim().isEmpty ? null : ()async {
+                    await context.read<CreateCategoryCubit>().saveCategory();
+
+                    Navigator.pop(context, true);
+                  },
+                  color: state.name.trim().isEmpty ? Colors.red.withOpacity(0.4) : Colors.red,
+                );
+              }
+          )
         ],
       ),
       body:Padding(
@@ -56,15 +47,14 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _boxCatalog(),
+            _boxPreview(),
             SizedBox(height: 16,),
             Text(StringUtils.catalogName, style: AppTextStyles.bodyLarge(color: Color(0xFF858076)),),
             SizedBox(height: 8,),
             CustomTextField(
                 hintText: StringUtils.egCatalog,
-                controller: _nameController,
                 onChanged: (text) {
-                  setState(() {});
+                  context.read<CreateCategoryCubit>().changeName(text);
                 },
             ),
             SizedBox(height: 16,),
@@ -96,39 +86,45 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
     );
   }
   
-  Widget _boxCatalog(){
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 250),
-      width: double.infinity,
-      height: 200,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: _selectedColor.withOpacity(0.12),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            height: 80,
-            width: 80,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: _selectedColor.withOpacity(0.2)
-            ),
-            child: Icon(Icons.local_offer_outlined, color: _selectedColor, size: 40,),
+  Widget _boxPreview(){
+    return BlocBuilder<CreateCategoryCubit, CreateCategoryState>(
+      builder: (context, state) {
+        return AnimatedContainer(
+          duration: Duration(milliseconds: 250),
+          width: double.infinity,
+          height: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: state.selectedColor.withOpacity(0.12),
           ),
-          SizedBox(height: 8,),
-          Text(
-              _nameController.text.isEmpty ? StringUtils.catalogNameLc : _nameController.text,
-              style: AppTextStyles.heading2(color: _selectedColor)
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: 80,
+                width: 80,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: state.selectedColor.withOpacity(0.2)
+                ),
+                child: Icon(Icons.local_offer_outlined, color: state.selectedColor, size: 40,),
+              ),
+              SizedBox(height: 8,),
+              Text(
+                  state.name.isEmpty ? StringUtils.catalogNameLc : state.name,
+                  style: AppTextStyles.heading2(color: state.selectedColor)
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        );
+  },
+);
   }
 
   Widget _boxColors(){
+    return BlocBuilder<CreateCategoryCubit, CreateCategoryState>(
+  builder: (context, state) {
     return Container(
       width: double.infinity,
       height: 180,
@@ -149,7 +145,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
         ),
         itemBuilder: (context, index){
           final Color colorItem = ColorUtils.colors[index];
-          final bool isSelected = colorItem == _selectedColor;
+          final bool isSelected = colorItem == state.selectedColor;
 
           return Material(
             color: Colors.transparent,
@@ -161,9 +157,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(20),
                 onTap: () {
-                  setState(() {
-                    _selectedColor = colorItem;
-                  });
+                  context.read<CreateCategoryCubit>().selectColor(colorItem);
                 },
                 child: Center(
                   child: isSelected ? Icon(Icons.check, color: Colors.white,) : SizedBox.shrink(),
@@ -174,20 +168,10 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
         }
       ),
     );
+  },
+);
   }
 
-  void _saveCategory() async{
-    final newCategory = Category(
-        id: 0,
-        name: _nameController.text.trim(),
-        color: _selectedColor.value.toRadixString(16),
-        createdAt: DateTime.now().toIso8601String(),
-    );
-
-    await AppDatabase.instance.insertCategory(newCategory);
-
-    Navigator.pop(context, true);
-  }
 }
 
 

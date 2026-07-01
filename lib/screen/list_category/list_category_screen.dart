@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/database/database.dart';
+import 'package:todo_app/screen/create_category/cubit/create_category_cubit.dart';
 import 'package:todo_app/utils/string_utils.dart';
 import 'package:todo_app/utils/custom_text.dart';
 import 'package:todo_app/model/category.dart';
@@ -88,8 +90,20 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
             borderRadius: BorderRadius.circular(20),
           ),
           child: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => CreateCategoryScreen() ));
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider(
+                    create: (_) => CreateCategoryCubit(),
+                    child: const CreateCategoryScreen(),
+                  ),
+                ),
+              );
+
+              if (result == true) {
+                _loadCategories();
+              }
             },
             backgroundColor: Colors.red,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

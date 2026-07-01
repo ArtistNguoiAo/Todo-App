@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/utils/custom_text.dart';
-import 'package:todo_app/screen/create_category/create_category_screen.dart';
 
 class SaveButton extends StatelessWidget{
   final String text ;
@@ -29,15 +28,13 @@ class SaveButton extends StatelessWidget{
 
 class CustomTextField extends StatelessWidget{
   final String? hintText;
-  final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
 
-  CustomTextField({super.key, required this.hintText, required this.controller, this.onChanged});
+  CustomTextField({super.key, required this.hintText, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: controller,
       onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hintText,

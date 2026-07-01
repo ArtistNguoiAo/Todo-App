@@ -3,7 +3,6 @@ import 'package:todo_app/utils/string_utils.dart';
 import 'package:todo_app/screen/list_category/list_category_screen.dart';
 import 'package:todo_app/screen/list_note/list_note_screen.dart';
 
-import '../create_category/create_category_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
