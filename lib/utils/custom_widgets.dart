@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/utils/custom_text.dart';
-import 'package:todo_app/screen/create_category/create_category_screen.dart';
 
 class SaveButton extends StatelessWidget{
   final String text ;
@@ -13,7 +12,7 @@ class SaveButton extends StatelessWidget{
     return Padding(
       padding: EdgeInsets.only(right: 10.0, top: 6.0, bottom: 6.0),
       child: Ink(
-        width: 70,
+        width: 80,
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(16),
@@ -29,10 +28,10 @@ class SaveButton extends StatelessWidget{
 
 class CustomTextField extends StatelessWidget{
   final String? hintText;
-  final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
+  final TextEditingController? controller;
 
-  CustomTextField({super.key, required this.hintText, required this.controller, this.onChanged});
+  CustomTextField({super.key, required this.hintText, this.onChanged, this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -60,3 +59,32 @@ class CustomTextField extends StatelessWidget{
   }
 }
 
+class DeleteInkWell extends StatelessWidget{
+  final Color bgColor;
+  final String text;
+  final VoidCallback onTap;
+
+  const DeleteInkWell ({super.key, required this.bgColor, required this.text, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Ink(
+      height: 40,
+      width: 100,
+      decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(10)
+      ),
+      child: InkWell(
+        onTap: onTap,
+        // splashColor: Colors.grey[500],
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: EdgeInsets.all(8.0),
+          alignment: Alignment.center,
+          child: Text(text, style: TextStyle(color: Colors.white, fontSize: 18),),
+        ),
+      ),
+    );
+  }
+}

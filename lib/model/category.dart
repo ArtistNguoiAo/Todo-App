@@ -1,11 +1,11 @@
 class Category {
-  final int id;
+  int? id;
   final String name;
   final String color;
   final String createdAt;
 
   Category({
-    required this.id,
+    this.id,
     required this.name,
     required this.color,
     required this.createdAt,
@@ -16,7 +16,7 @@ class Category {
       id: map['id'],
       name: map['name'],
       color: map['color'],
-      createdAt: map['createdAt'],
+      createdAt: map['created_at'],
     );
   }
 
