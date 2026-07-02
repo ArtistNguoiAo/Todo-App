@@ -57,4 +57,25 @@ class AppDatabase{
       'created_at': map['created_at'],
     })).toList();
   }
+
+  Future<int> updateCategory(Category category) async {
+    final db = await instance.database;
+    final map = category.toMap()..remove('id');
+    return db.update(
+      'categories',
+      map,
+      where: 'id = ?',
+      whereArgs: [category.id],
+    );
+  }
+
+  Future<int> deleteCategory(int id) async {
+    final db = await instance.database;
+
+    return await db.delete(
+      'categories',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 }

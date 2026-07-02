@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/screen/list_category/cubit/list_category_cubit.dart';
 import 'package:todo_app/utils/string_utils.dart';
 import 'package:todo_app/screen/list_category/list_category_screen.dart';
 import 'package:todo_app/screen/list_note/list_note_screen.dart';
@@ -23,9 +25,12 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           IndexedStack(
             index: _selectedIndex,
-            children: const [
+            children: [
               ListNoteScreen(),
-              ListCategoryScreen(),
+              BlocProvider(
+                  create: (_) => ListCategoryCubit()..loadCategories(),
+                  child: ListCategoryScreen(),
+              )
             ],
           ),
           Positioned(

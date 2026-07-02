@@ -10,4 +10,5 @@ class StringUtils{
   static final color = 'MÀU SẮC';
   static final egCatalog = 'Ví dụ: Công việc, Cá nhân...';
   static final appDB = 'app_database.db';
+  static final update = 'Cập nhật';
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/model/category.dart';
 import 'package:todo_app/screen/create_category/cubit/create_category_cubit.dart';
 import 'package:todo_app/utils/color_utils.dart';
 import 'package:todo_app/utils/custom_text.dart';
@@ -7,13 +8,32 @@ import 'package:todo_app/utils/custom_widgets.dart';
 import 'package:todo_app/utils/string_utils.dart';
 
 class CreateCategoryScreen extends StatefulWidget {
-  const CreateCategoryScreen({super.key});
+  final Category? category;
+  const CreateCategoryScreen({super.key, this.category});
 
   @override
   State<CreateCategoryScreen> createState() => _CreateCategoryScreenState();
 }
 
 class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
+  late TextEditingController _nameController;
+
+  @override
+  void initState(){
+    super.initState();
+
+    _nameController = TextEditingController();
+
+    if(widget.category != null){
+      context.read<CreateCategoryCubit>().initEdit(widget.category!);
+      _nameController.text = widget.category!.name;
+    }
+  }
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +49,9 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
           BlocBuilder<CreateCategoryCubit, CreateCategoryState>(
               builder: (context, state){
                 return SaveButton(
-                  text: StringUtils.create,
+                  text: state.editingCategory == null ? StringUtils.create : StringUtils.update,
                   onTap: state.name.trim().isEmpty ? null : ()async {
-                    await context.read<CreateCategoryCubit>().saveCategory();
+                    await context.read<CreateCategoryCubit>().saveOrUpdateCategory();
 
                     Navigator.pop(context, true);
                   },
@@ -56,6 +76,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
                 onChanged: (text) {
                   context.read<CreateCategoryCubit>().changeName(text);
                 },
+              controller: _nameController,
             ),
             SizedBox(height: 16,),
             Text(StringUtils.color, style: AppTextStyles.bodyLarge(color: Color(0xFF858076)),),

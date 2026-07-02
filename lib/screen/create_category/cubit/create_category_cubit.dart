@@ -10,7 +10,8 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
   CreateCategoryCubit() : super(CreateCategoryState(
       name: '',
       selectedColor: ColorUtils.red,
-      isSaving: false)
+      isSaving: false,
+  )
   );
 
   void selectColor(Color color){
@@ -21,18 +22,36 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     emit(state.copyWith(name: name));
   }
 
-  Future<void> saveCategory() async{
+  Future<void> saveOrUpdateCategory() async{
     emit(state.copyWith(isSaving: true));
 
-    final newCategory = Category(
-      id: 0,
-      name: state.name.trim(),
-      color: state.selectedColor.value.toRadixString(16),
-      createdAt: DateTime.now().toIso8601String(),
-    );
-
-    await AppDatabase.instance.insertCategory(newCategory);
-
+    if(state.editingCategory == null){
+      final newCategory = Category(
+        id: 0,
+        name: state.name.trim(),
+        color: state.selectedColor.value.toRadixString(16),
+        createdAt: DateTime.now().toIso8601String(),
+      );
+      await AppDatabase.instance.insertCategory(newCategory);
+    }
+    else{
+      final category = Category(
+        id: state.editingCategory!.id,
+        name: state.name.trim(),
+        color: state.selectedColor.value.toRadixString(16),
+        createdAt: state.editingCategory!.createdAt,
+      );
+      await AppDatabase.instance.updateCategory(category);
+    }
     emit(state.copyWith(isSaving: false));
+  }
+
+  void initEdit(Category category){
+    emit(state.copyWith(
+        name: category.name,
+        selectedColor: Color(int.parse(category.color, radix: 16)),
+        editingCategory: category,
+      )
+    );
   }
 }

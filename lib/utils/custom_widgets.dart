@@ -12,7 +12,7 @@ class SaveButton extends StatelessWidget{
     return Padding(
       padding: EdgeInsets.only(right: 10.0, top: 6.0, bottom: 6.0),
       child: Ink(
-        width: 70,
+        width: 80,
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(16),
@@ -29,12 +29,14 @@ class SaveButton extends StatelessWidget{
 class CustomTextField extends StatelessWidget{
   final String? hintText;
   final ValueChanged<String>? onChanged;
+  final TextEditingController? controller;
 
-  CustomTextField({super.key, required this.hintText, this.onChanged});
+  CustomTextField({super.key, required this.hintText, this.onChanged, this.controller});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
       onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hintText,

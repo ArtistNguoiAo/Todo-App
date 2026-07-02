@@ -7,7 +7,7 @@ class ListCategoryState{
   ListCategoryState({
     required this.isLoading,
     required this.categories,
-})
+});
 
   ListCategoryState copyWith({
     bool? isLoading,
@@ -18,4 +18,5 @@ class ListCategoryState{
         categories: categories ?? this.categories
     );
   }
+
 }
