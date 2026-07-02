@@ -11,4 +11,7 @@ class StringUtils{
   static final egCatalog = 'Ví dụ: Công việc, Cá nhân...';
   static final appDB = 'app_database.db';
   static final update = 'Cập nhật';
+  static final delete = "Delete";
+  static final deleted = 'Đã xoá ghi chú thành công!';
+  static final cancel = 'Cancel';
 }

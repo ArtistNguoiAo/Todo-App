@@ -59,3 +59,32 @@ class CustomTextField extends StatelessWidget{
   }
 }
 
+class DeleteInkWell extends StatelessWidget{
+  final Color bgColor;
+  final String text;
+  final VoidCallback onTap;
+
+  const DeleteInkWell ({super.key, required this.bgColor, required this.text, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Ink(
+      height: 40,
+      width: 100,
+      decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(10)
+      ),
+      child: InkWell(
+        onTap: onTap,
+        // splashColor: Colors.grey[500],
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: EdgeInsets.all(8.0),
+          alignment: Alignment.center,
+          child: Text(text, style: TextStyle(color: Colors.white, fontSize: 18),),
+        ),
+      ),
+    );
+  }
+}

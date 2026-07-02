@@ -4,7 +4,9 @@ import 'package:todo_app/screen/create_category/cubit/create_category_cubit.dart
 import 'package:todo_app/screen/list_category/cubit/list_category_cubit.dart';
 import 'package:todo_app/utils/string_utils.dart';
 import 'package:todo_app/utils/custom_text.dart';
+import '../../utils/custom_widgets.dart';
 import '../create_category/create_category_screen.dart';
+import 'package:todo_app/model/category.dart';
 
 
 class ListCategoryScreen extends StatefulWidget {
@@ -40,48 +42,40 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
                   return Card(
                     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     color: Colors.white,
-                    child: ListTile(
-                      leading: Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: categoryColor.withOpacity(0.2)
+                    child: InkWell(
+                      onTap: () async{
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BlocProvider(
+                              create: (_) => CreateCategoryCubit(),
+                              child: CreateCategoryScreen(
+                                category: category,
+                              ),
+                            ),
+                          ),
+                        ).then((result) {
+                          if (result == true) {
+                            context.read<ListCategoryCubit>().loadCategories();
+                          }
+                        });
+                      },
+                      child: ListTile(
+                        leading: Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: categoryColor.withOpacity(0.2)
+                          ),
+                          child: Icon(Icons.local_offer_outlined, color: categoryColor, size: 28,),
                         ),
-                        child: Icon(Icons.local_offer_outlined, color: categoryColor, size: 28,),
-                      ),
-                      title: Text(category.name),
-                      subtitle: Text("0 ghi chú"),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          InkWell(
-                            child: Icon(Icons.edit_outlined, color: Colors.grey[700]),
-                            onTap: () async{
-                              final result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => BlocProvider(
-                                    create: (_) => CreateCategoryCubit(),
-                                    child: CreateCategoryScreen(
-                                      category: category,
-                                    ),
-                                  ),
-                                ),
-                              );
-                              if (result == true) {
-                                context.read<ListCategoryCubit>().loadCategories();
-                              }
-                            },
-                          ),
-                          SizedBox(width: 16,),
-                          InkWell(
-                            child: Icon(Icons.delete_outline, color: Colors.grey[700]),
-                            onTap: () {
-                              context.read<ListCategoryCubit>().deleteCategory(category.id!);
-                            },
-                          ),
-                        ],
+                        title: Text(category.name),
+                        subtitle: Text("0 ghi chú"),
+                        trailing: InkWell(
+                          child: Icon(Icons.delete_outline, color: Colors.grey[700]),
+                          onTap: () {_showSaveDialog(context, category);},
+                        ),
                       ),
                     ),
                   );
@@ -89,35 +83,44 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
             );
           }
       ),
-        floatingActionButton: Container(
-          margin: EdgeInsets.only(bottom: 120, right: 20),
-          width: 70,
-          height: 70,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: FloatingActionButton(
-            onPressed: () async {
-              final result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => BlocProvider(
-                    create: (_) => CreateCategoryCubit(),
-                    child: const CreateCategoryScreen(),
-                  ),
-                ),
-              );
-
-              if (result == true) {
-                context.read<ListCategoryCubit>().loadCategories();
-              }
-            },
-            backgroundColor: Colors.red,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            elevation: 6,
-            child: const Icon(Icons.add, color: Colors.white, size: 60),
-          ),
-        ),
     );
+  }
+
+  void _showSaveDialog(BuildContext context,Category category){
+    showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+          backgroundColor: Colors.white,
+          contentPadding: EdgeInsets.all(10),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20)
+          ),
+          content: SizedBox(
+            width: 200,
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.info, color: Colors.grey[600],),
+                SizedBox(height: 30,),
+                Text(StringUtils.delete, style: AppTextStyles.bodyLarge(),),
+                SizedBox(height: 30,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DeleteInkWell(bgColor: Colors.red, text: StringUtils.cancel, onTap: (){ Navigator.pop(context);}),
+                    SizedBox(width: 30,),
+                    DeleteInkWell(bgColor: Colors.green, text: StringUtils.delete, onTap: () async{
+                      await context.read<ListCategoryCubit>().deleteCategory(category.id!);
+                        //Đóng Dialog
+                      Navigator.pop(context);
+
+                    }),
+                  ],
+                ),
+              ],
+            ),
+          )
+      );
+    });
   }
 }
