@@ -2,7 +2,10 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:todo_app/model/category.dart';
+import 'package:todo_app/model/note.dart';
 import 'package:todo_app/utils/string_utils.dart';
+
+import '../enum/note_priority_enum.dart';
 
 class AppDatabase{
   static final AppDatabase instance = AppDatabase._init();
@@ -37,6 +40,18 @@ class AppDatabase{
       )
     ''');
 
+    await db.execute('''
+      CREATE TABLE notes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      category_id INTEGER,
+      title TEXT NOT NULL,
+      content TEXT,
+      is_done INTEGER NOT NULL DEFAULT 0,
+      priority INTEGER NOT NULL,
+      created_at INTEGER NOT NULL,
+      FOREIGN KEY(id) REFERENCES categories(id) ON DELETE CASCADE
+      )
+    ''');
   }
 
   //Xử lý bảng Categories
@@ -50,12 +65,7 @@ class AppDatabase{
     final db = await instance.database;
     final result = await db.query('categories', orderBy: 'created_at DESC');
 
-    return result.map((map) => Category.fromMap({
-      'id' : map['id'],
-      'name': map['name'],
-      'color': map['color'],
-      'created_at': map['created_at'],
-    })).toList();
+    return result.map((map) => Category.fromMap(map)).toList();
   }
 
   Future<int> updateCategory(Category category) async {
@@ -74,6 +84,41 @@ class AppDatabase{
 
     return await db.delete(
       'categories',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  //Xử lý bảng Notes
+  Future<int> insertNote(Note note) async{
+    final db = await instance.database;
+    final map = note.toMap()..remove('id');
+    return await db.insert('notes', map);
+  }
+
+  Future<List<Note>> getAllNotes() async{
+    final db = await instance.database;
+    final result = await db.query('notes', orderBy: 'created_at DESC');
+
+    return result.map((map) => Note.fromMap(map)).toList();
+  }
+
+  Future<int> deleteNote(int id) async {
+    final db = await instance.database;
+
+    return await db.delete(
+      'notes',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<int> updateNoteDone(int id, bool isDone) async {
+    final db = await instance.database;
+
+    return await db.update(
+      'notes',
+      {'is_done': isDone ? 1 : 0},
       where: 'id = ?',
       whereArgs: [id],
     );

@@ -43,7 +43,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
         centerTitle: false,
         backgroundColor: Color(0xFFF6F5F0),
         automaticallyImplyLeading: false,
-        leading: _backButton(),
+        leading: backButton(),
         title: Text(StringUtils.newCatalog, style: AppTextStyles.heading2(),),
         actions: [
           BlocBuilder<CreateCategoryCubit, CreateCategoryState>(
@@ -85,25 +85,6 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
           ],
         ),
       )
-    );
-  }
-  
-  Widget _backButton(){
-    return Padding(
-      padding: EdgeInsets.only(left: 10.0, top: 6.0, bottom: 6.0),
-      child: Ink(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey, width: 1),
-        ),
-        child: InkWell(
-          child: Icon(Icons.arrow_back_rounded, color: Colors.black,),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
     );
   }
   

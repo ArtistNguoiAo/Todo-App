@@ -25,7 +25,7 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
       appBar: AppBar(
         centerTitle: false,
         backgroundColor: Color(0xFFF6F5F0),
-        title: Text(StringUtils.catalog, style: AppTextStyles.heading1,),
+        title: Text(StringUtils.catalog1, style: AppTextStyles.heading1,),
       ),
       body: BlocBuilder<ListCategoryCubit, ListCategoryState>(
           builder: (context, state) {
@@ -87,7 +87,7 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
   }
 
   void _showSaveDialog(BuildContext context,Category category){
-    showDialog(context: context, builder: (BuildContext context){
+    showDialog(context: context, builder: (BuildContext dialoCcontext){
       return AlertDialog(
           backgroundColor: Colors.white,
           contentPadding: EdgeInsets.all(10),
@@ -102,14 +102,14 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
               children: [
                 Icon(Icons.info, color: Colors.grey[600],),
                 SizedBox(height: 30,),
-                Text(StringUtils.delete, style: AppTextStyles.bodyLarge(),),
+                Text(StringUtils.confirmDelete, style: AppTextStyles.bodyLarge(),),
                 SizedBox(height: 30,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    DeleteInkWell(bgColor: Colors.red, text: StringUtils.cancel, onTap: (){ Navigator.pop(context);}),
+                    DeleteInkWell(bgColor: Colors.grey, text: StringUtils.cancel, onTap: (){ Navigator.pop(context);}),
                     SizedBox(width: 30,),
-                    DeleteInkWell(bgColor: Colors.green, text: StringUtils.delete, onTap: () async{
+                    DeleteInkWell(bgColor: Colors.red, text: StringUtils.delete, onTap: () async{
                       await context.read<ListCategoryCubit>().deleteCategory(category.id!);
                         //Đóng Dialog
                       Navigator.pop(context);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/screen/create_note/create_note_screen.dart';
+import 'package:todo_app/screen/create_note/cubit/create_note_cubit.dart';
 import 'package:todo_app/screen/list_category/cubit/list_category_cubit.dart';
 import 'package:todo_app/utils/string_utils.dart';
 import 'package:todo_app/screen/list_category/list_category_screen.dart';
@@ -62,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _buildTabItem(
                     index: 1,
                     icon: Icons.local_offer_outlined,
-                    label: StringUtils.catalog,
+                    label: StringUtils.catalog1,
                     onTap: () {
                       setState(() {
                         _selectedIndex = 1;
@@ -88,7 +89,11 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => CreateNoteScreen(),)
+                      builder: (_) => BlocProvider(
+                          create: (_) => CreateNoteCubit(),
+                          child: const CreateNoteScreen(),
+                      ),
+                  ),
               );
             }
             else{

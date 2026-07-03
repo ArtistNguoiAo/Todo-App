@@ -21,7 +21,7 @@ class AppTextStyles {
     height: 1.5, // Line height
   );
 
-  static const TextStyle bodyMedium = TextStyle(
+  static TextStyle bodyMedium({Color color = Colors.black87}) => TextStyle(
     fontSize: 14.0,
     fontWeight: FontWeight.normal,
     color: Colors.black54,

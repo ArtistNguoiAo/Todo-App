@@ -2,7 +2,7 @@ import 'package:todo_app/enum/note_priority_enum.dart';
 
 class Note {
   final int id;
-  final int categoryId;
+  final int? categoryId;
   final String title;
   final String content;
   final bool isDone;

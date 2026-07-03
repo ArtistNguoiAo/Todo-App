@@ -88,3 +88,27 @@ class DeleteInkWell extends StatelessWidget{
     );
   }
 }
+
+class backButton extends StatelessWidget{
+  const backButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(left: 10.0, top: 6.0, bottom: 6.0),
+      child: Ink(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.grey, width: 1),
+        ),
+        child: InkWell(
+          child: Icon(Icons.arrow_back_rounded, color: Colors.black,),
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    );
+  }
+}

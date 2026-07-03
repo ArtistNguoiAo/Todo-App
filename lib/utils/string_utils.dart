@@ -1,6 +1,7 @@
 class StringUtils{
   static final note ='Ghi chú';
-  static final catalog = 'Danh mục';
+  static final catalog1 = 'Danh mục';
+  static final catalog2 = 'DANH MỤC';
   static final newNote = 'Ghi chú mới';
   static final newCatalog = 'Danh mục mới';
   static final create = 'Tạo';
@@ -14,4 +15,16 @@ class StringUtils{
   static final delete = "Delete";
   static final deleted = 'Đã xoá ghi chú thành công!';
   static final cancel = 'Cancel';
+  static final title = 'TIÊU ĐỀ';
+  static final hintTitle = 'Nhập tiêu đề ghi chú';
+  static final description = 'MÔ TẢ';
+  static final addDescription = 'Thêm mô tả (tuỳ chọn)...';
+  static final day = 'Ngày';
+  static final priority = 'ĐỘ ƯU TIÊN';
+  static final p = 'P';
+  static final urgent = 'Khẩn cấp';
+  static final important = 'Quan trọng';
+  static final normal = 'Bình thường';
+  static final confirmDelete = 'Bạn chắc chắn muốn xoá danh mục này?';
+  static final noCategory = 'Không có danh mục';
 }
