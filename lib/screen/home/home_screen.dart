@@ -89,9 +89,12 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (_) => BlocProvider(
-                          create: (_) => CreateNoteCubit(),
-                          child: const CreateNoteScreen(),
+                      builder: (_) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider(create: (_) => CreateNoteCubit()),
+                            BlocProvider(create: (_) => ListCategoryCubit()..loadCategories()),
+                          ],
+                        child: CreateNoteScreen(),
                       ),
                   ),
               );

@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 
@@ -26,9 +25,6 @@ class ListCategoryCubit extends Cubit<ListCategoryState> {
     ));
   }
 
-  Color parseColor(String hexColor) {
-    return Color(int.parse(hexColor, radix: 16));
-  }
 
   Future<void> deleteCategory(int id) async {
     await AppDatabase.instance.deleteCategory(id);

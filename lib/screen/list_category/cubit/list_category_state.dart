@@ -2,7 +2,7 @@ part of 'list_category_cubit.dart';
 
 class ListCategoryState{
   final bool isLoading;
-  final List<Category> categories;
+  final List<NoteCategory> categories;
 
   ListCategoryState({
     required this.isLoading,
@@ -11,7 +11,7 @@ class ListCategoryState{
 
   ListCategoryState copyWith({
     bool? isLoading,
-    List<Category>? categories,
+    List<NoteCategory>? categories,
   }) {
     return ListCategoryState(
         isLoading: isLoading ?? this.isLoading,

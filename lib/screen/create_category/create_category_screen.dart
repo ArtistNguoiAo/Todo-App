@@ -8,7 +8,7 @@ import 'package:todo_app/utils/custom_widgets.dart';
 import 'package:todo_app/utils/string_utils.dart';
 
 class CreateCategoryScreen extends StatefulWidget {
-  final Category? category;
+  final NoteCategory? category;
   const CreateCategoryScreen({super.key, this.category});
 
   @override

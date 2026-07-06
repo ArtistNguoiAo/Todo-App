@@ -4,6 +4,7 @@ import 'package:todo_app/screen/create_category/cubit/create_category_cubit.dart
 import 'package:todo_app/screen/list_category/cubit/list_category_cubit.dart';
 import 'package:todo_app/utils/string_utils.dart';
 import 'package:todo_app/utils/custom_text.dart';
+import '../../utils/color_utils.dart';
 import '../../utils/custom_widgets.dart';
 import '../create_category/create_category_screen.dart';
 import 'package:todo_app/model/category.dart';
@@ -37,7 +38,7 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
                 itemCount: state.categories.length,
                 itemBuilder: (context, index){
                   final category = state.categories[index];
-                  final categoryColor = context.read<ListCategoryCubit>().parseColor(category.color);
+                  final categoryColor = parseColor(category.color);
 
                   return Card(
                     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -70,7 +71,7 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
                           ),
                           child: Icon(Icons.local_offer_outlined, color: categoryColor, size: 28,),
                         ),
-                        title: Text(category.name),
+                        title: Text(category.name, style: AppTextStyles.bodyLarge(),),
                         subtitle: Text("0 ghi chú"),
                         trailing: InkWell(
                           child: Icon(Icons.delete_outline, color: Colors.grey[700]),
@@ -86,7 +87,7 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
     );
   }
 
-  void _showSaveDialog(BuildContext context,Category category){
+  void _showSaveDialog(BuildContext context,NoteCategory category){
     showDialog(context: context, builder: (BuildContext dialoCcontext){
       return AlertDialog(
           backgroundColor: Colors.white,

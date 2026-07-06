@@ -1,9 +1,14 @@
-import 'package:flutter/foundation.dart';
+// import 'dart:math';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:todo_app/enum/note_priority_enum.dart';
 import 'package:todo_app/screen/list_category/cubit/list_category_cubit.dart';
+import 'package:todo_app/utils/color_utils.dart';
 import 'package:todo_app/utils/custom_widgets.dart';
 import 'package:todo_app/screen/create_note/cubit/create_note_cubit.dart';
+import '../../model/category.dart';
 import '../../utils/custom_text.dart';
 import '../../utils/string_utils.dart';
 
@@ -15,6 +20,22 @@ class CreateNoteScreen extends StatefulWidget {
 }
 
 class _CreateNoteScreenState extends State<CreateNoteScreen> {
+  late final TextEditingController dateController;
+
+  @override
+  void initState(){
+    super.initState();
+
+    final now = DateTime.now();
+
+    dateController = TextEditingController(
+      text: DateFormat('dd/MM/yyyy').format(now),
+    );
+
+    context.read<CreateNoteCubit>().changeDate(now);
+    context.read<CreateNoteCubit>().getListNoteCategory();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,12 +46,21 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
         automaticallyImplyLeading: false,
         leading: backButton(),
         title: Text(StringUtils.newNote, style: AppTextStyles.heading2(),),
-        actions: [
-          SaveButton(
+        actions: [ BlocBuilder<CreateNoteCubit, CreateNoteState>(
+          builder: (context, state){
+            return SaveButton(
               text: StringUtils.save,
-              onTap: () {},
-              color: Colors.red,
-          ),
+              onTap: state.title.trim().isEmpty ? null : ()async {
+                log("TrungLQ1");
+                await context.read<CreateNoteCubit>().saveNote();
+                log("TrungLQ2");
+                Navigator.pop(context, true);
+                log("TrungLQ3");
+              },
+              color: state.title.trim().isEmpty ? Colors.red.withOpacity(0.4) : Colors.red,
+            );
+          }
+        )
         ],
       ),
       body: SingleChildScrollView(
@@ -45,21 +75,37 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
               SizedBox(height: 8,),
               CustomTextField(
                 hintText: StringUtils.hintTitle,
-                // controller: _nameController,
+                onChanged: (value) {
+                  context.read<CreateNoteCubit>().updateTitle(value);
+                },
               ),
               SizedBox(height: 16,),
               Text(StringUtils.description, style: AppTextStyles.bodyLarge(color: Color(0xFF858076)),),
               SizedBox(height: 8,),
               CustomTextField(
                 hintText: StringUtils.addDescription,
-                // controller: _nameController,
+                onChanged: (value) {
+                  context.read<CreateNoteCubit>().updateContent(value);
+                },
                 ),
               SizedBox(height: 16,),
               Text(StringUtils.day, style: AppTextStyles.bodyLarge(color: Color(0xFF858076)),),
               SizedBox(height: 8,),
-              CustomTextField(
-              hintText: StringUtils.hintTitle,
-              // controller: _nameController,
+              TextFormField(
+                controller: dateController,
+                keyboardType: TextInputType.datetime,
+                decoration: InputDecoration(
+                  hintText: 'dd/MM/yyyy',
+                ),
+                onChanged: (value){
+                  try {
+                    final date = DateFormat('dd/MM/yyyy').parseStrict(value);
+
+                    context.read<CreateNoteCubit>().changeDate(date);
+                  } catch (_) {
+                    // Người dùng đang nhập dở, chưa phải ngày hợp lệ.
+                  }
+                },
               ),
               SizedBox(height: 16,),
               Text(StringUtils.priority, style: AppTextStyles.bodyLarge(color: Color(0xFF858076)),),
@@ -70,11 +116,11 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Expanded(child: _priorityCard(context: context ,priority: 1, state: state)),
+                    Expanded(child: _priorityCard(context: context ,priority: NotePriorityEnum.high, state: state)),
                     SizedBox(width: 12,),
-                    Expanded(child: _priorityCard(context: context ,priority: 2,state: state)),
+                    Expanded(child: _priorityCard(context: context ,priority: NotePriorityEnum.medium,state: state)),
                     SizedBox(width: 12,),
-                    Expanded(child: _priorityCard(context: context ,priority: 3,state: state)),
+                    Expanded(child: _priorityCard(context: context ,priority: NotePriorityEnum.low,state: state)),
                   ],
                 );
               },
@@ -92,22 +138,23 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
 
   Widget _priorityCard({
     required BuildContext context,
-    required int priority,
+    required NotePriorityEnum priority,
     required CreateNoteState state,
 }){
+
     final Color color = switch(priority){
-      1 => Colors.red,
-      2 => Colors.blueAccent,
+      NotePriorityEnum.high => Colors.red,
+      NotePriorityEnum.medium => Colors.blueAccent,
       _ =>  Colors.grey,
     };
     final IconData icon = switch(priority){
-      1 => Icons.local_fire_department_outlined,
-      2 => Icons.circle_outlined,
+      NotePriorityEnum.high => Icons.local_fire_department_outlined,
+      NotePriorityEnum.medium => Icons.circle_outlined,
       _ => Icons.remove,
     };
     final String label = switch(priority){
-      1 => StringUtils.urgent,
-      2 => StringUtils.important,
+      NotePriorityEnum.high => StringUtils.urgent,
+      NotePriorityEnum.medium => StringUtils.important,
       _ => StringUtils.normal,
     };
     final bool isSelected = state.selectedPriority == priority;
@@ -138,7 +185,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
               child: Icon(icon, color: color,),
             ),
             SizedBox(height: 8,),
-            Text('P$priority', style: AppTextStyles.bodyLarge(color: Color(0xFF858076))),
+            Text(priority.label, style: AppTextStyles.bodyLarge(color: Color(0xFF858076))),
             SizedBox(height: 8,),
             Text(
               label,
@@ -150,29 +197,64 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
   }
 
   Widget _menuCategories(){
-    return BlocBuilder<ListCategoryCubit, ListCategoryState>(
-        builder: (context, catgogyState){
-          return BlocBuilder<CreateNoteCubit, CreateNoteState>(
-              builder: (context, noteState){
-                // return DropdownButtonFormField<Category>(
-                //     value: noteState.selectedCategory,
-                //
-                //     decoration: InputDecoration(
-                //       border: OutlineInputBorder()
-                //     ),
-                //
-                //     items: [
-                //       DropdownMenuItem<Category>(
-                //           child: Text(StringUtils.noCategory, style: AppTextStyles.bodyMedium(color: Colors.grey),),
-                //           value: null,
-                //       ),
-                //       ...
-                //     ],
-                //     onChanged: (category)
-                // );
+    return BlocBuilder<CreateNoteCubit, CreateNoteState>(
+        builder: (context, state){
+          return DropdownButtonFormField<NoteCategory?>(
+              value: state.selectedCategory,
+              isExpanded: true,
+              itemHeight: null,
+              isDense: false,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  )
+              ),
+
+              items: [
+                DropdownMenuItem<NoteCategory?>(
+                  value: null,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 10,),
+                      CircleAvatar(
+                        backgroundColor: Colors.grey,
+                        radius: 6,
+                      ),
+                      SizedBox(width: 16,),
+                      Text(StringUtils.noCategory, style: AppTextStyles.bodyMediumBold(color: Colors.grey),)
+                    ],
+                  ),
+                ),
+                ...state.listCategory.map<DropdownMenuItem<NoteCategory?>>((category){
+                  final isSelected = state.selectedCategory?.id == category.id;
+
+                  return DropdownMenuItem<NoteCategory?>(
+                    value: category,
+                    child: Row(
+                      children: [
+                        SizedBox(width: 10,),
+                        CircleAvatar(
+                          backgroundColor: parseColor(category.color),
+                          radius: 6,
+                        ),
+                        SizedBox(width: 16,),
+                        Expanded(
+                          child: Text(
+                            category.name,
+                            style: AppTextStyles.bodyMediumBold(color: parseColor(category.color)),
+                          ),
+                        ),
+                        if(isSelected) Icon(Icons.check, size: 18, color: parseColor(category.color)),
+                      ],
+                    ),
+                  );
+                })
+              ],
+              onChanged: (NoteCategory? category) {
+                context.read<CreateNoteCubit>().changeCategory(category);
               }
           );
         }
     );
-}
+  }
 }

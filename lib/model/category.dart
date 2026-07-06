@@ -1,18 +1,18 @@
-class Category {
+class NoteCategory {
   int? id;
   final String name;
   final String color;
   final String createdAt;
 
-  Category({
+  NoteCategory({
     this.id,
     required this.name,
     required this.color,
     required this.createdAt,
   });
 
-  factory Category.fromMap(Map<String, dynamic> map) {
-    return Category(
+  factory NoteCategory.fromMap(Map<String, dynamic> map) {
+    return NoteCategory(
       id: map['id'],
       name: map['name'],
       color: map['color'],

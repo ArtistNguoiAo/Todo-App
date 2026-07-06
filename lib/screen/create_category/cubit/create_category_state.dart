@@ -4,7 +4,7 @@ class CreateCategoryState {
   final String name;
   final Color selectedColor;
   final bool isSaving;
-  final Category? editingCategory;
+  final NoteCategory? editingCategory;
 
   CreateCategoryState({
     required this.name,
@@ -17,7 +17,7 @@ class CreateCategoryState {
     String? name,
     Color? selectedColor,
     bool? isSaving,
-    Category? editingCategory,
+    NoteCategory? editingCategory,
 }) {
     return CreateCategoryState(
         name: name ?? this.name,

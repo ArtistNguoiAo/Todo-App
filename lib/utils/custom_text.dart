@@ -24,7 +24,13 @@ class AppTextStyles {
   static TextStyle bodyMedium({Color color = Colors.black87}) => TextStyle(
     fontSize: 14.0,
     fontWeight: FontWeight.normal,
-    color: Colors.black54,
+    color: color,
+  );
+
+  static TextStyle bodyMediumBold({Color color = Colors.black87}) => TextStyle(
+    fontSize: 15.0,
+    fontWeight: FontWeight.bold,
+    color: color,
   );
 
   static const TextStyle buttonText = TextStyle(

@@ -26,7 +26,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     emit(state.copyWith(isSaving: true));
 
     if(state.editingCategory == null){
-      final newCategory = Category(
+      final newCategory = NoteCategory(
         id: 0,
         name: state.name.trim(),
         color: state.selectedColor.value.toRadixString(16),
@@ -35,7 +35,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
       await AppDatabase.instance.insertCategory(newCategory);
     }
     else{
-      final category = Category(
+      final category = NoteCategory(
         id: state.editingCategory!.id,
         name: state.name.trim(),
         color: state.selectedColor.value.toRadixString(16),
@@ -46,7 +46,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     emit(state.copyWith(isSaving: false));
   }
 
-  void initEdit(Category category){
+  void initEdit(NoteCategory category){
     emit(state.copyWith(
         name: category.name,
         selectedColor: Color(int.parse(category.color, radix: 16)),

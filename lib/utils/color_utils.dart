@@ -15,3 +15,7 @@ class ColorUtils{
   static final List<Color> colors = [red, orange, yellow, green, turquoise, blue, indigoBlue, purple, lotusPink, grey];
 
 }
+
+Color parseColor(String hexColor) {
+  return Color(int.parse(hexColor, radix: 16));
+}

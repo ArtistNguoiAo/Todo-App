@@ -5,8 +5,6 @@ import 'package:todo_app/model/category.dart';
 import 'package:todo_app/model/note.dart';
 import 'package:todo_app/utils/string_utils.dart';
 
-import '../enum/note_priority_enum.dart';
-
 class AppDatabase{
   static final AppDatabase instance = AppDatabase._init();
   static Database? _database;
@@ -55,20 +53,20 @@ class AppDatabase{
   }
 
   //Xử lý bảng Categories
-  Future<int> insertCategory(Category category) async{
+  Future<int> insertCategory(NoteCategory category) async{
     final db = await instance.database;
     final map = category.toMap()..remove('id');
     return await db.insert('categories', map);
   }
 
-  Future<List<Category>> getAllCategories() async{
+  Future<List<NoteCategory>> getAllCategories() async{
     final db = await instance.database;
     final result = await db.query('categories', orderBy: 'created_at DESC');
 
-    return result.map((map) => Category.fromMap(map)).toList();
+    return result.map((map) => NoteCategory.fromMap(map)).toList();
   }
 
-  Future<int> updateCategory(Category category) async {
+  Future<int> updateCategory(NoteCategory category) async {
     final db = await instance.database;
     final map = category.toMap()..remove('id');
     return db.update(
