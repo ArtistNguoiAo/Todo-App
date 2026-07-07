@@ -1,10 +1,8 @@
-// import 'dart:math';
-import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app/enum/note_priority_enum.dart';
-import 'package:todo_app/screen/list_category/cubit/list_category_cubit.dart';
 import 'package:todo_app/utils/color_utils.dart';
 import 'package:todo_app/utils/custom_widgets.dart';
 import 'package:todo_app/screen/create_note/cubit/create_note_cubit.dart';
@@ -51,11 +49,11 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
             return SaveButton(
               text: StringUtils.save,
               onTap: state.title.trim().isEmpty ? null : ()async {
-                log("TrungLQ1");
+
                 await context.read<CreateNoteCubit>().saveNote();
-                log("TrungLQ2");
+
                 Navigator.pop(context, true);
-                log("TrungLQ3");
+
               },
               color: state.title.trim().isEmpty ? Colors.red.withOpacity(0.4) : Colors.red,
             );

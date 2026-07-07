@@ -1,7 +1,5 @@
-import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter/foundation.dart';
 import 'package:todo_app/enum/note_priority_enum.dart';
 
 import '../../../database/database.dart';
@@ -18,7 +16,6 @@ class CreateNoteCubit extends Cubit<CreateNoteState> {
 
 
   void changeCategory(NoteCategory? category){
-    log("TrungLQ: ${category?.id}");
     emit(state.copyWith(
       selectedCategory: category,
     ));
@@ -32,27 +29,37 @@ class CreateNoteCubit extends Cubit<CreateNoteState> {
     emit(state.copyWith(content: content));
   }
 
-  Future<void> saveNote() async {
-    if(state.title.trim().isEmpty){
-      return;
-    }
 
+  Future<void> saveNote() async {
     emit(state.copyWith(isSaving: true));
 
-    final newNote = Note(
-      id: 0,
-      categoryId: state.selectedCategory?.id,
-      title: state.title,
-      content: state.content,
-      isDone: false,
-      priority: state.selectedPriority,
-      createdAt: DateTime.now().microsecondsSinceEpoch,
-    );
-
-    await AppDatabase.instance.insertNote(newNote);
-
+    if (state.editingNote == null) {
+      final newNote = Note(
+        id: 0,
+        categoryId: state.selectedCategory?.id,
+        title: state.title.trim(),
+        content: state.content.trim(),
+        isDone: false,
+        priority: state.selectedPriority,
+        createdAt: DateTime
+            .now()
+            .microsecondsSinceEpoch,
+      );
+      await AppDatabase.instance.insertNote(newNote);
+    } else {
+      final newNote = Note(
+        id: state.editingNote!.id,
+        categoryId: state.selectedCategory?.id,
+        title: state.title.trim(),
+        content: state.content.trim(),
+        isDone: false,
+        priority: state.selectedPriority,
+        createdAt: state.editingNote!.createdAt,
+      );
+      await AppDatabase.instance.updateNote(newNote);
+    }
     emit(state.copyWith(isSaving: false));
-  }
+}
 
   void changeDate(DateTime date){
     emit(state.copyWith(selectedDate: date));

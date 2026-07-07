@@ -111,7 +111,7 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
                     DeleteInkWell(bgColor: Colors.grey, text: StringUtils.cancel, onTap: (){ Navigator.pop(context);}),
                     SizedBox(width: 30,),
                     DeleteInkWell(bgColor: Colors.red, text: StringUtils.delete, onTap: () async{
-                      await context.read<ListCategoryCubit>().deleteCategory(category.id!);
+                      await context.read<ListCategoryCubit>().deleteCategory(category.id);
                         //Đóng Dialog
                       Navigator.pop(context);
 

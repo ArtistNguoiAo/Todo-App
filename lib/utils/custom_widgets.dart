@@ -19,7 +19,7 @@ class SaveButton extends StatelessWidget{
         ),
         child: InkWell(
           onTap: onTap,
-          child: Center(child: Text(text, style: AppTextStyles.buttonText,)),
+          child: Center(child: Text(text, style: AppTextStyles.buttonText(),)),
         ),
       ),
     );

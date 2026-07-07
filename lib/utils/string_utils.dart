@@ -27,4 +27,7 @@ class StringUtils{
   static final normal = 'Bình thường';
   static final confirmDelete = 'Bạn chắc chắn muốn xoá danh mục này?';
   static final noCategory = 'Không có danh mục';
+  static final completed = 'đã hoàn thành';
+  static final all = 'Tất cả';
+  static final noNote = "Chưa có ghi chú";
 }

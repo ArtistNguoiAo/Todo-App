@@ -23,7 +23,7 @@ class AppDatabase{
 
     return await openDatabase(
       path,
-      version: 3,
+      version: 5,
       onCreate: _createDB,
     );
   }
@@ -47,7 +47,7 @@ class AppDatabase{
       is_done INTEGER NOT NULL DEFAULT 0,
       priority INTEGER NOT NULL,
       created_at INTEGER NOT NULL,
-      FOREIGN KEY(id) REFERENCES categories(id) ON DELETE CASCADE
+      FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE CASCADE
       )
     ''');
   }
@@ -61,7 +61,7 @@ class AppDatabase{
 
   Future<List<NoteCategory>> getAllCategories() async{
     final db = await instance.database;
-    final result = await db.query('categories', orderBy: 'created_at DESC');
+    final result = await db.query('categories', orderBy: 'id ASC');
 
     return result.map((map) => NoteCategory.fromMap(map)).toList();
   }
@@ -119,6 +119,16 @@ class AppDatabase{
       {'is_done': isDone ? 1 : 0},
       where: 'id = ?',
       whereArgs: [id],
+    );
+  }
+  Future<int> updateNote(Note note) async {
+    final db = await instance.database;
+    final map = note.toMap()..remove('id');
+    return db.update(
+      'notes',
+      map,
+      where: 'id = ?',
+      whereArgs: [note.id],
     );
   }
 }

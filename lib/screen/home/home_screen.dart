@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/screen/create_note/create_note_screen.dart';
 import 'package:todo_app/screen/create_note/cubit/create_note_cubit.dart';
 import 'package:todo_app/screen/list_category/cubit/list_category_cubit.dart';
+import 'package:todo_app/screen/list_note/cubit/list_note_cubit.dart';
 import 'package:todo_app/utils/string_utils.dart';
 import 'package:todo_app/screen/list_category/list_category_screen.dart';
 import 'package:todo_app/screen/list_note/list_note_screen.dart';
@@ -26,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: Stack(
+        body: Stack(
         children: [
           IndexedStack(
             index: _selectedIndex,
@@ -89,13 +90,10 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (_) => MultiBlocProvider(
-                          providers: [
-                            BlocProvider(create: (_) => CreateNoteCubit()),
-                            BlocProvider(create: (_) => ListCategoryCubit()..loadCategories()),
-                          ],
+                      builder: (_) => BlocProvider(
+                        create: (_) => CreateNoteCubit(),
                         child: CreateNoteScreen(),
-                      ),
+                      )
                   ),
               );
             }
@@ -111,6 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ).then((result) {
                 if (result == true) {
                   context.read<ListCategoryCubit>().loadCategories();
+                  context.read<ListNoteCubit>().loadCategories();
                 }
               });
             }
@@ -121,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: const Icon(Icons.add, color: Colors.white, size: 60),
           ),
         ),
-    );
+);
   }
 
   Widget _buildTabItem({

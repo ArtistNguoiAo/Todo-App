@@ -1,11 +1,11 @@
 class NoteCategory {
-  int? id;
+  final int id;
   final String name;
   final String color;
   final String createdAt;
 
   NoteCategory({
-    this.id,
+    required this.id,
     required this.name,
     required this.color,
     required this.createdAt,
