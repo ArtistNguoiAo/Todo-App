@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app/enum/note_priority_enum.dart';
 import 'package:todo_app/utils/color_utils.dart';
-import 'package:todo_app/utils/custom_widgets.dart';
+import 'package:todo_app/widget/custom_widgets.dart';
 import 'package:todo_app/screen/create_note/cubit/create_note_cubit.dart';
 import '../../model/category.dart';
-import '../../utils/custom_text.dart';
+import '../../widget/custom_text.dart';
 import '../../utils/string_utils.dart';
 
 class CreateNoteScreen extends StatefulWidget {
@@ -139,22 +139,6 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
     required NotePriorityEnum priority,
     required CreateNoteState state,
 }){
-
-    final Color color = switch(priority){
-      NotePriorityEnum.high => Colors.red,
-      NotePriorityEnum.medium => Colors.blueAccent,
-      _ =>  Colors.grey,
-    };
-    final IconData icon = switch(priority){
-      NotePriorityEnum.high => Icons.local_fire_department_outlined,
-      NotePriorityEnum.medium => Icons.circle_outlined,
-      _ => Icons.remove,
-    };
-    final String label = switch(priority){
-      NotePriorityEnum.high => StringUtils.urgent,
-      NotePriorityEnum.medium => StringUtils.important,
-      _ => StringUtils.normal,
-    };
     final bool isSelected = state.selectedPriority == priority;
 
     return InkWell(
@@ -164,9 +148,9 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: isSelected ? color.withOpacity(0.08) : Colors.white,
+                color: isSelected ? priority.color.withOpacity(0.08) : Colors.white,
                 border: Border.all(
-                    color: isSelected ? color : Colors.white,
+                    color: isSelected ? priority.color : Colors.white,
                     width: 2
                 )
             ),
@@ -177,16 +161,16 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: priority.color.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Icon(icon, color: color,),
+              child: Icon(priority.icon, color: priority.color,),
             ),
             SizedBox(height: 8,),
             Text(priority.label, style: AppTextStyles.bodyLarge(color: Color(0xFF858076))),
             SizedBox(height: 8,),
             Text(
-              label,
+              priority.description,
               style: AppTextStyles.bodyMedium(color: Colors.grey),)
           ],
         ),

@@ -41,9 +41,7 @@ class CreateNoteCubit extends Cubit<CreateNoteState> {
         content: state.content.trim(),
         isDone: false,
         priority: state.selectedPriority,
-        createdAt: DateTime
-            .now()
-            .microsecondsSinceEpoch,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
       );
       await AppDatabase.instance.insertNote(newNote);
     } else {
@@ -59,7 +57,7 @@ class CreateNoteCubit extends Cubit<CreateNoteState> {
       await AppDatabase.instance.updateNote(newNote);
     }
     emit(state.copyWith(isSaving: false));
-}
+  }
 
   void changeDate(DateTime date){
     emit(state.copyWith(selectedDate: date));

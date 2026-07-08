@@ -3,11 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/screen/create_category/cubit/create_category_cubit.dart';
 import 'package:todo_app/screen/list_category/cubit/list_category_cubit.dart';
 import 'package:todo_app/utils/string_utils.dart';
-import 'package:todo_app/utils/custom_text.dart';
+import 'package:todo_app/widget/custom_text.dart';
+import 'package:todo_app/widget/dialog.dart';
 import '../../utils/color_utils.dart';
-import '../../utils/custom_widgets.dart';
 import '../create_category/create_category_screen.dart';
-import 'package:todo_app/model/category.dart';
 
 
 class ListCategoryScreen extends StatefulWidget {
@@ -44,6 +43,7 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     color: Colors.white,
                     child: InkWell(
+                      borderRadius: BorderRadius.circular(10),
                       onTap: () async{
                         Navigator.push(
                           context,
@@ -67,7 +67,7 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
                           width: 50,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              color: categoryColor.withOpacity(0.2)
+                              color: categoryColor.withOpacity(0.1)
                           ),
                           child: Icon(Icons.local_offer_outlined, color: categoryColor, size: 28,),
                         ),
@@ -75,7 +75,14 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
                         subtitle: Text("0 ghi chú"),
                         trailing: InkWell(
                           child: Icon(Icons.delete_outline, color: Colors.grey[700]),
-                          onTap: () {_showSaveDialog(context, category);},
+                          onTap: () {
+                            AppDialog.showDeleteDialog(
+                                context: context,
+                                onDelete: () async{
+                                  context.read<ListCategoryCubit>().deleteCategory(category.id);
+                                }
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -85,43 +92,5 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
           }
       ),
     );
-  }
-
-  void _showSaveDialog(BuildContext context,NoteCategory category){
-    showDialog(context: context, builder: (BuildContext dialoCcontext){
-      return AlertDialog(
-          backgroundColor: Colors.white,
-          contentPadding: EdgeInsets.all(10),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20)
-          ),
-          content: SizedBox(
-            width: 200,
-            height: 200,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.info, color: Colors.grey[600],),
-                SizedBox(height: 30,),
-                Text(StringUtils.confirmDelete, style: AppTextStyles.bodyLarge(),),
-                SizedBox(height: 30,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    DeleteInkWell(bgColor: Colors.grey, text: StringUtils.cancel, onTap: (){ Navigator.pop(context);}),
-                    SizedBox(width: 30,),
-                    DeleteInkWell(bgColor: Colors.red, text: StringUtils.delete, onTap: () async{
-                      await context.read<ListCategoryCubit>().deleteCategory(category.id);
-                        //Đóng Dialog
-                      Navigator.pop(context);
-
-                    }),
-                  ],
-                ),
-              ],
-            ),
-          )
-      );
-    });
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/utils/custom_text.dart';
+import 'package:todo_app/widget/custom_text.dart';
 
 class SaveButton extends StatelessWidget{
   final String text ;
@@ -73,12 +73,12 @@ class DeleteInkWell extends StatelessWidget{
       width: 100,
       decoration: BoxDecoration(
           color: bgColor,
-          borderRadius: BorderRadius.circular(10)
+          borderRadius: BorderRadius.circular(16)
       ),
       child: InkWell(
         onTap: onTap,
         // splashColor: Colors.grey[500],
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(16),
         child: Container(
           padding: EdgeInsets.all(8.0),
           alignment: Alignment.center,

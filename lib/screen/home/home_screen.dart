@@ -95,7 +95,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: CreateNoteScreen(),
                       )
                   ),
-              );
+              ).then((result) {
+                if (result == true) {
+                  context.read<ListNoteCubit>().loadNotes();
+                }
+              });
             }
             else{
               Navigator.push(
@@ -109,7 +113,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ).then((result) {
                 if (result == true) {
                   context.read<ListCategoryCubit>().loadCategories();
-                  context.read<ListNoteCubit>().loadCategories();
                 }
               });
             }

@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/model/category.dart';
 import 'package:todo_app/screen/create_category/cubit/create_category_cubit.dart';
 import 'package:todo_app/utils/color_utils.dart';
-import 'package:todo_app/utils/custom_text.dart';
-import 'package:todo_app/utils/custom_widgets.dart';
+import 'package:todo_app/widget/custom_text.dart';
+import 'package:todo_app/widget/custom_widgets.dart';
 import 'package:todo_app/utils/string_utils.dart';
 
 class CreateCategoryScreen extends StatefulWidget {

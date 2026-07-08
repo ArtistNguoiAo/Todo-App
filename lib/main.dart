@@ -18,14 +18,14 @@ class TodoApp extends StatelessWidget {
       home: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (_) => ListNoteCubit()..loadCategories(),
+            create: (_) => ListNoteCubit()..loadNotes(),
           ),
           BlocProvider(
             create: (_) => ListCategoryCubit()..loadCategories(),
           ),
         ],
         child: const HomeScreen(),
-      )
+      ),
     );
   }
 }

@@ -25,9 +25,25 @@ class StringUtils{
   static final urgent = 'Khẩn cấp';
   static final important = 'Quan trọng';
   static final normal = 'Bình thường';
-  static final confirmDelete = 'Bạn chắc chắn muốn xoá danh mục này?';
+  static final confirmDelete = 'Bạn chắc chắn muốn xoá?';
   static final noCategory = 'Không có danh mục';
   static final completed = 'đã hoàn thành';
   static final all = 'Tất cả';
   static final noNote = "Chưa có ghi chú";
+  static final p1 = 'P1';
+  static final p2 = 'P2';
+  static final p3 = 'P3';
+  static final tomorrow = "Ngày mai";
+  static final today = "Hôm nay";
+  static final yesterday = "Hôm qua";
+  static final weekDays = [
+    "Thứ Hai",
+    "Thứ Ba",
+    "Thứ Tư",
+    "Thứ Năm",
+    "Thứ Sáu",
+    "Thứ Bảy",
+    "Chủ Nhật",
+  ];
+
 }
