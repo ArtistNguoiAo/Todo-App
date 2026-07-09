@@ -21,15 +21,21 @@ class AppTextStyles {
     height: 1.5, // Line height
   );
 
-  static const TextStyle bodyMedium = TextStyle(
+  static TextStyle bodyMedium({Color color = Colors.black87}) => TextStyle(
     fontSize: 14.0,
     fontWeight: FontWeight.normal,
-    color: Colors.black54,
+    color: color,
   );
 
-  static const TextStyle buttonText = TextStyle(
+  static TextStyle bodyMediumBold({Color color = Colors.black87}) => TextStyle(
+    fontSize: 15.0,
+    fontWeight: FontWeight.bold,
+    color: color,
+  );
+
+  static TextStyle buttonText({Color color = Colors.white}) => TextStyle(
     fontSize: 16.0,
     fontWeight: FontWeight.w700,
-    color: Colors.white,
+    color: color,
   );
 }

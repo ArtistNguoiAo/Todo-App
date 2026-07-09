@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/screen/create_note/create_note_screen.dart';
+import 'package:todo_app/screen/create_note/cubit/create_note_cubit.dart';
+import 'package:todo_app/screen/list_category/cubit/list_category_cubit.dart';
+import 'package:todo_app/screen/list_note/cubit/list_note_cubit.dart';
 import 'package:todo_app/utils/string_utils.dart';
 import 'package:todo_app/screen/list_category/list_category_screen.dart';
 import 'package:todo_app/screen/list_note/list_note_screen.dart';
 
 import '../create_category/create_category_screen.dart';
+import '../create_category/cubit/create_category_cubit.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,11 +27,11 @@ class _HomeScreenState extends State<HomeScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: Stack(
+        body: Stack(
         children: [
           IndexedStack(
             index: _selectedIndex,
-            children: const [
+            children: [
               ListNoteScreen(),
               ListCategoryScreen(),
             ],
@@ -36,6 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.grey[300]!,
+                    width: 1,
+                  )
               ),
               width: screenWidth*0.6,
               margin: EdgeInsets.only(bottom: 24),
@@ -57,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _buildTabItem(
                     index: 1,
                     icon: Icons.local_offer_outlined,
-                    label: StringUtils.catalog,
+                    label: StringUtils.catalog1,
                     onTap: () {
                       setState(() {
                         _selectedIndex = 1;
@@ -70,22 +81,53 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      floatingActionButton: Container(
-        margin: EdgeInsets.only(bottom: 120, right: 20),
-        width: 70,
-        height: 70,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: FloatingActionButton(
-          onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) => CreateCategoryScreen() ));},
+        floatingActionButton: Container(
+          margin: EdgeInsets.only(bottom: 120, right: 20),
+          width: 70,
+          height: 70,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: FloatingActionButton(
+          onPressed: () async {
+            if(_selectedIndex == 0){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => BlocProvider(
+                        create: (_) => CreateNoteCubit(),
+                        child: CreateNoteScreen(),
+                      )
+                  ),
+              ).then((result) {
+                if (result == true) {
+                  context.read<ListNoteCubit>().loadNotes();
+                }
+              });
+            }
+            else{
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider(
+                    create: (_) => CreateCategoryCubit(),
+                    child: const CreateCategoryScreen(),
+                  ),
+                ),
+              ).then((result) {
+                if (result == true) {
+                  context.read<ListCategoryCubit>().loadCategories();
+                }
+              });
+            }
+          },
           backgroundColor: Colors.red,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           elevation: 6,
           child: const Icon(Icons.add, color: Colors.white, size: 60),
+          ),
         ),
-      ),
-    );
+);
   }
 
   Widget _buildTabItem({

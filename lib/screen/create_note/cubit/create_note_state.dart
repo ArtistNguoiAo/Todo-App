@@ -1,0 +1,45 @@
+part of 'create_note_cubit.dart';
+
+class CreateNoteState{
+  final NotePriorityEnum selectedPriority;
+  final bool isSaving;
+  final NoteCategory? selectedCategory;
+  final String title;
+  final String content;
+  final DateTime? selectedDate;
+  final List<NoteCategory> listCategory;
+  final Note? editingNote;
+
+  CreateNoteState({
+    this.selectedPriority = NotePriorityEnum.medium,
+    this.isSaving = false,
+    this.selectedCategory,
+    this.title = '',
+    this.content = '',
+    this.selectedDate,
+    this.listCategory = const [],
+    this.editingNote,
+});
+
+  CreateNoteState copyWith({
+    NotePriorityEnum? selectedPriority,
+    bool? isSaving,
+    NoteCategory? Function()? selectedCategory,
+    String? title,
+    String? content,
+    DateTime? selectedDate,
+    List<NoteCategory>? listCategory,
+    Note? editingNote,
+  }) {
+    return CreateNoteState(
+      selectedPriority: selectedPriority ?? this.selectedPriority,
+      isSaving: isSaving ?? this.isSaving,
+      selectedCategory: selectedCategory != null ? selectedCategory() : this.selectedCategory,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      selectedDate: selectedDate ?? this.selectedDate,
+      listCategory: listCategory ?? this.listCategory,
+      editingNote: editingNote ?? this.editingNote,
+    );
+  }
+}
