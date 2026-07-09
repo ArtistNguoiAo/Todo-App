@@ -24,7 +24,7 @@ class CreateNoteState{
   CreateNoteState copyWith({
     NotePriorityEnum? selectedPriority,
     bool? isSaving,
-    NoteCategory? selectedCategory,
+    NoteCategory? Function()? selectedCategory,
     String? title,
     String? content,
     DateTime? selectedDate,
@@ -34,7 +34,7 @@ class CreateNoteState{
     return CreateNoteState(
       selectedPriority: selectedPriority ?? this.selectedPriority,
       isSaving: isSaving ?? this.isSaving,
-      selectedCategory: selectedCategory ?? this.selectedCategory,
+      selectedCategory: selectedCategory != null ? selectedCategory() : this.selectedCategory,
       title: title ?? this.title,
       content: content ?? this.content,
       selectedDate: selectedDate ?? this.selectedDate,

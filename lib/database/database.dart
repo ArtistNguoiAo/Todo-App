@@ -23,7 +23,7 @@ class AppDatabase{
 
     return await openDatabase(
       path,
-      version: 5,
+      version: 7,
       onCreate: _createDB,
     );
   }
@@ -46,7 +46,7 @@ class AppDatabase{
       content TEXT,
       is_done INTEGER NOT NULL DEFAULT 0,
       priority INTEGER NOT NULL,
-      created_at INTEGER NOT NULL,
+      scheduled_at INTEGER NOT NULL,
       FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE CASCADE
       )
     ''');
@@ -96,7 +96,7 @@ class AppDatabase{
 
   Future<List<Note>> getAllNotes() async{
     final db = await instance.database;
-    final result = await db.query('notes', orderBy: 'created_at DESC');
+    final result = await db.query('notes', orderBy: 'scheduled_at DESC');
 
     return result.map((map) => Note.fromMap(map)).toList();
   }

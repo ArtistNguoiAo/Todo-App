@@ -1,5 +1,6 @@
 
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:todo_app/enum/note_priority_enum.dart';
 
 import '../../../database/database.dart';
@@ -17,7 +18,7 @@ class CreateNoteCubit extends Cubit<CreateNoteState> {
 
   void changeCategory(NoteCategory? category){
     emit(state.copyWith(
-      selectedCategory: category,
+      selectedCategory: () => category,
     ));
   }
 
@@ -30,7 +31,7 @@ class CreateNoteCubit extends Cubit<CreateNoteState> {
   }
 
 
-  Future<void> saveNote() async {
+  Future<void> saveOrUpdateNote() async {
     emit(state.copyWith(isSaving: true));
 
     if (state.editingNote == null) {
@@ -41,20 +42,20 @@ class CreateNoteCubit extends Cubit<CreateNoteState> {
         content: state.content.trim(),
         isDone: false,
         priority: state.selectedPriority,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
+        scheduledAt: state.selectedDate!.millisecondsSinceEpoch,
       );
       await AppDatabase.instance.insertNote(newNote);
     } else {
-      final newNote = Note(
+      final note = Note(
         id: state.editingNote!.id,
         categoryId: state.selectedCategory?.id,
         title: state.title.trim(),
         content: state.content.trim(),
-        isDone: false,
+        isDone: state.editingNote!.isDone,
         priority: state.selectedPriority,
-        createdAt: state.editingNote!.createdAt,
+        scheduledAt: state.selectedDate!.millisecondsSinceEpoch,
       );
-      await AppDatabase.instance.updateNote(newNote);
+      await AppDatabase.instance.updateNote(note);
     }
     emit(state.copyWith(isSaving: false));
   }
@@ -66,5 +67,21 @@ class CreateNoteCubit extends Cubit<CreateNoteState> {
   void getListNoteCategory() async {
     final listCategory = await AppDatabase.instance.getAllCategories();
     emit(state.copyWith(listCategory: listCategory));
+  }
+
+  Future<void> initEdit(Note note) async{
+    final listCategory = await AppDatabase.instance.getAllCategories();
+    final selectedCategory = listCategory.firstWhereOrNull((category) => category.id == note.categoryId);
+
+    emit(state.copyWith(
+      listCategory: listCategory,
+      selectedPriority: note.priority,
+      selectedCategory: () => selectedCategory,
+      title: note.title,
+      content: note.content,
+      editingNote: note,
+      selectedDate: DateTime.fromMillisecondsSinceEpoch(note.scheduledAt),
+    )
+    );
   }
 }

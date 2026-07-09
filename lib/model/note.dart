@@ -7,7 +7,7 @@ class Note {
   final String content;
   final bool isDone;
   final NotePriorityEnum priority;
-  final int createdAt;
+  final int scheduledAt;
 
   Note({
     required this.id,
@@ -16,7 +16,7 @@ class Note {
     required this.content,
     required this.isDone,
     required this.priority,
-    required this.createdAt,
+    required this.scheduledAt,
   });
 
   factory Note.fromMap(Map<String, dynamic> map) {
@@ -27,7 +27,7 @@ class Note {
       content: map['content'],
       isDone: map['is_done'] == 1,
       priority: NotePriorityEnum.values[map['priority']],
-      createdAt: map['created_at'],
+      scheduledAt: map['scheduled_at'],
     );
   }
 
@@ -39,7 +39,7 @@ class Note {
       'content': content,
       'is_done': isDone ? 1 : 0,
       'priority': priority.index,
-      'created_at': createdAt,
+      'scheduled_at': scheduledAt,
     };
   }
 }

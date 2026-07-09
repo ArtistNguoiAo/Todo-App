@@ -43,6 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.grey[300]!,
+                    width: 1,
+                  )
               ),
               width: screenWidth*0.6,
               margin: EdgeInsets.only(bottom: 24),

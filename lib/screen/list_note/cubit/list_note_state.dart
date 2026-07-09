@@ -4,14 +4,30 @@ class ListNoteState{
   final bool isLoading;
   final List<Note> notes;
   final NoteCategory? selectedCategory;
-  final Map<DateTime, List<Note>> groupedNotes;
 
   ListNoteState({
     this.isLoading = false,
     this.notes = const [],
     this.selectedCategory,
-    this.groupedNotes = const {},
   });
+
+  Map<DateTime, List<Note>> get filteredGroupedNotes {
+    //Lọc danh sách theo danh mục đang chọn
+    final filteredNotes = selectedCategory == null
+        ? notes
+        : notes.where((note) => note.categoryId == selectedCategory!.id).toList();
+
+    //Nhóm danh sách đã lọc theo ngày
+    final Map<DateTime, List<Note>> grouped = {};
+    for (final note in filteredNotes) {
+      final date = DateTime.fromMillisecondsSinceEpoch(note.scheduledAt);
+      final onlyDate = DateTime(date.year, date.month, date.day);
+
+      grouped.putIfAbsent(onlyDate, () => []);
+      grouped[onlyDate]!.add(note);
+    }
+    return grouped;
+  }
 
   ListNoteState copyWith({
     bool? isLoading,
@@ -23,7 +39,6 @@ class ListNoteState{
         isLoading: isLoading ?? this.isLoading,
         notes: notes ?? this.notes,
         selectedCategory: selectedCategory ?? this.selectedCategory,
-        groupedNotes: groupedNotes ?? this.groupedNotes,
     );
   }
 

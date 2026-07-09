@@ -3,6 +3,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/enum/note_priority_enum.dart';
+import 'package:todo_app/screen/create_note/create_note_screen.dart';
+import 'package:todo_app/screen/create_note/cubit/create_note_cubit.dart';
 import 'package:todo_app/screen/list_category/cubit/list_category_cubit.dart';
 import 'package:todo_app/screen/list_note/cubit/list_note_cubit.dart';
 import 'package:todo_app/utils/color_utils.dart';
@@ -52,30 +54,31 @@ class ListNoteScreenState extends State<ListNoteScreen> {
                           itemCount: categories.length + 1,
                           itemBuilder: (context, index){
                             if(index == 0){
+                              final isAllSelected = state.selectedCategory == null;
                               return Padding(
                                 padding: const EdgeInsets.only(left: 8),
                                 child: _categoryChip(
                                     text: StringUtils.all,
-                                    isSelected: state.selectedCategory == null,
+                                    isSelected: isAllSelected,
                                     onTap: () {
                                       context.read<ListNoteCubit>().changeCategory(null);
                                     },
-                                    colorText: Colors.white,
-                                    backgroundColor: Colors.black,
+                                    colorText: isAllSelected ? Colors.white : Colors.grey,
+                                    backgroundColor: isAllSelected ? Colors.black : Colors.white,
                                 ),
                               );
                             }
-                            final categories = context.watch<ListCategoryCubit>().state.categories;
                             final category = categories[index - 1];
+                            final isSelected = state.selectedCategory?.id == category.id;
 
                             return _categoryChip(
                                 text: category.name,
-                                isSelected: state.selectedCategory?.id == category.id,
+                                isSelected: isSelected,
                                 onTap: () {
                                   context.read<ListNoteCubit>().changeCategory(category);
                                 },
-                                colorText: parseColor(category.color),
-                                backgroundColor: Colors.white
+                                colorText: isSelected ? Colors.white : parseColor(category.color),
+                                backgroundColor: isSelected ? parseColor(category.color) : Colors.white
                             );
                           },
                         ),
@@ -90,22 +93,23 @@ class ListNoteScreenState extends State<ListNoteScreen> {
             if (state.isLoading) {
               return Center(child: CircularProgressIndicator(),);
             }
-
-            if (state.notes.isEmpty) {
+            final groupedData = state.filteredGroupedNotes;
+            if (groupedData.isEmpty) {
               return Center(
                 child: Text(StringUtils.noNote),
               );
             }
-            final dates = state.groupedNotes.keys.toList();
+            final dates = groupedData.keys.toList();
             return ListView.builder(
               itemCount: dates.length,
               itemBuilder: (context, index){
                 final date = dates[index];
-                final notes = state.groupedNotes[date]!;
+                final notesInDate = groupedData[date]!;
                 final header = getDateTitle(date);
+                final noteCount = notesInDate.length;
 
                 return Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -113,10 +117,13 @@ class ListNoteScreenState extends State<ListNoteScreen> {
                         children: [
                           Text(header.title, style: AppTextStyles.bodyLarge(color: Colors.black),),
                           SizedBox(width: 8),
-                          Text(header.date, style: AppTextStyles.bodyMedium(color: Colors.grey),),
+                          Expanded(child: Text(header.date, style: AppTextStyles.bodyMedium(color: Colors.black54),)),
+                          Text('$noteCount', style: AppTextStyles.bodyMedium(color: Colors.black54),),
                         ],
                       ),
-                      ...notes.map((note) => _noteCard(note: note)),
+                      Divider(color: Colors.grey, ),
+                      SizedBox(height: 8,),
+                      ...notesInDate.map((note) => _noteCard(note: note)),
                     ],
                   ),
                 );
@@ -137,8 +144,12 @@ class ListNoteScreenState extends State<ListNoteScreen> {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: Material(
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: colorText, width: 1),
+          borderRadius: BorderRadius.circular(30),
+        ),
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(30),
+
         child: InkWell(
           borderRadius: BorderRadius.circular(30),
           onTap: onTap,
@@ -162,17 +173,29 @@ class ListNoteScreenState extends State<ListNoteScreen> {
     final category = categories.firstWhereOrNull((e) => e.id == note.categoryId);
 
     return Card(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 8,
-      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
       ),
       color: note.isDone ? Colors.grey[200] : Colors.white,
       child: InkWell(
         borderRadius: BorderRadius.circular(24),
-        onTap: () {},
+        onTap: () async{
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => CreateNoteCubit(),
+                child: CreateNoteScreen(
+                  note: note,
+                ),
+              ),
+            ),
+          ).then((result) {
+            if (result == true) {
+              context.read<ListNoteCubit>().loadNotes();
+            }
+          });
+        },
         child: Padding(
             padding: EdgeInsets.all(16),
             child: Row(

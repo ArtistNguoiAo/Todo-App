@@ -7,18 +7,22 @@ import 'package:todo_app/utils/color_utils.dart';
 import 'package:todo_app/widget/custom_widgets.dart';
 import 'package:todo_app/screen/create_note/cubit/create_note_cubit.dart';
 import '../../model/category.dart';
+import '../../model/note.dart';
 import '../../widget/custom_text.dart';
 import '../../utils/string_utils.dart';
 
 class CreateNoteScreen extends StatefulWidget {
-  const CreateNoteScreen({super.key});
+  final Note? note;
+  const CreateNoteScreen({super.key, this.note});
 
   @override
   State<CreateNoteScreen> createState() => _CreateNoteScreenState();
 }
 
 class _CreateNoteScreenState extends State<CreateNoteScreen> {
-  late final TextEditingController dateController;
+  late TextEditingController dateController;
+  late TextEditingController titleController;
+  late TextEditingController contentController;
 
   @override
   void initState(){
@@ -26,12 +30,29 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
 
     final now = DateTime.now();
 
-    dateController = TextEditingController(
-      text: DateFormat('dd/MM/yyyy').format(now),
-    );
+    titleController = TextEditingController();
+    contentController = TextEditingController();
+    dateController = TextEditingController();
 
-    context.read<CreateNoteCubit>().changeDate(now);
-    context.read<CreateNoteCubit>().getListNoteCategory();
+    if(widget.note != null){
+      final noteDate = DateTime.fromMillisecondsSinceEpoch(widget.note!.scheduledAt);
+
+      titleController.text = widget.note!.title;
+      contentController.text = widget.note!.content;
+      dateController.text = DateFormat('dd/MM/yyyy').format(noteDate);
+      context.read<CreateNoteCubit>().initEdit(widget.note!);
+    }else{
+      context.read<CreateNoteCubit>().getListNoteCategory();
+      dateController.text = DateFormat('dd/MM/yyyy').format(now);
+      context.read<CreateNoteCubit>().changeDate(now);
+    }
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    contentController.dispose();
+    super.dispose();
   }
 
   @override
@@ -50,7 +71,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
               text: StringUtils.save,
               onTap: state.title.trim().isEmpty ? null : ()async {
 
-                await context.read<CreateNoteCubit>().saveNote();
+                await context.read<CreateNoteCubit>().saveOrUpdateNote();
 
                 Navigator.pop(context, true);
 
@@ -76,6 +97,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                 onChanged: (value) {
                   context.read<CreateNoteCubit>().updateTitle(value);
                 },
+                controller: titleController,
               ),
               SizedBox(height: 16,),
               Text(StringUtils.description, style: AppTextStyles.bodyLarge(color: Color(0xFF858076)),),
@@ -85,6 +107,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                 onChanged: (value) {
                   context.read<CreateNoteCubit>().updateContent(value);
                 },
+                controller: contentController,
                 ),
               SizedBox(height: 16,),
               Text(StringUtils.day, style: AppTextStyles.bodyLarge(color: Color(0xFF858076)),),
@@ -181,6 +204,8 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
   Widget _menuCategories(){
     return BlocBuilder<CreateNoteCubit, CreateNoteState>(
         builder: (context, state){
+          final isNoCategorySelected = state.selectedCategory == null;
+
           return DropdownButtonFormField<NoteCategory?>(
               value: state.selectedCategory,
               isExpanded: true,
@@ -189,45 +214,46 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
               decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
-                  )
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                  ),
               ),
-
+              selectedItemBuilder: (BuildContext context) {
+                return [
+                  _categoryCard(
+                      color: Colors.grey,
+                      text: StringUtils.noCategory,
+                      condition: false
+                  ),
+                  ...state.listCategory.map((category) {
+                    return _categoryCard(
+                        color: parseColor(category.color),
+                        text: category.name,
+                        condition: false,
+                    );
+                  })
+                ];
+              },
               items: [
                 DropdownMenuItem<NoteCategory?>(
                   value: null,
-                  child: Row(
-                    children: [
-                      SizedBox(width: 10,),
-                      CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        radius: 6,
-                      ),
-                      SizedBox(width: 16,),
-                      Text(StringUtils.noCategory, style: AppTextStyles.bodyMediumBold(color: Colors.grey),)
-                    ],
+                  child: _categoryCard(
+                      color: Colors.grey,
+                      text: StringUtils.noCategory,
+                      condition: isNoCategorySelected,
                   ),
                 ),
                 ...state.listCategory.map<DropdownMenuItem<NoteCategory?>>((category){
-                  final isSelected = state.selectedCategory?.id == category.id;
+                  final isSelected = state.selectedCategory != null && state.selectedCategory?.id == category.id;
 
                   return DropdownMenuItem<NoteCategory?>(
                     value: category,
-                    child: Row(
-                      children: [
-                        SizedBox(width: 10,),
-                        CircleAvatar(
-                          backgroundColor: parseColor(category.color),
-                          radius: 6,
-                        ),
-                        SizedBox(width: 16,),
-                        Expanded(
-                          child: Text(
-                            category.name,
-                            style: AppTextStyles.bodyMediumBold(color: parseColor(category.color)),
-                          ),
-                        ),
-                        if(isSelected) Icon(Icons.check, size: 18, color: parseColor(category.color)),
-                      ],
+                    child: _categoryCard(
+                      color: parseColor(category.color),
+                      text: category.name,
+                      condition: isSelected,
                     ),
                   );
                 })
@@ -237,6 +263,22 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
               }
           );
         }
+    );
+  }
+
+  Widget _categoryCard({
+    required Color color,
+    required String text,
+    required bool condition,
+}){
+    return Row(
+      children: [
+        SizedBox(width: 10,),
+        CircleAvatar(backgroundColor: color, radius: 6,),
+        SizedBox(width: 16,),
+        Expanded(child: Text(text, style: AppTextStyles.bodyMediumBold(color: color),)),
+        if(condition) Icon(Icons.check, size: 18, color: color)
+      ],
     );
   }
 }
