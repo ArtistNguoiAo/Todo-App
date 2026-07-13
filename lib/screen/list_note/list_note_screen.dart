@@ -267,11 +267,13 @@ class ListNoteScreenState extends State<ListNoteScreen> {
                     child: Icon(Icons.delete_outline, color: Colors.grey[700]),
                   ),
                   onTap: () {
-                    AppDialog.showDeleteDialog(
+                    AppDialog.showConfirmDialog(
                         context: context,
                         onDelete: () async{
                           context.read<ListNoteCubit>().deleteNote(note.id);
-                        }
+                        },
+                        text: StringUtils.confirmDelete,
+                        content: StringUtils.delete,
                     );
                   },
                 ),

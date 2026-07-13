@@ -45,5 +45,30 @@ class StringUtils{
     "Thứ Bảy",
     "Chủ Nhật",
   ];
-
+  static final weakPassword = 'weak-password';
+  static final weakPasswordNotice = 'Mật khẩu quá yếu (tối thiểu 6 ký tự).';
+  static final usedEmail = 'email-already-in-use';
+  static final errorSystem = 'Đã xảy ra lỗi hệ thống.';
+  static final usedEmailNotice = 'Email này đã được đăng ký tài khoản khác.';
+  static final errorRegister = 'Lỗi đăng ký: ';
+  static final userNotFound = 'user-not-found';
+  static final wrongPassword = 'wrong-password';
+  static final invalidCredential = 'invalid-credential';
+  static final wrongEmailOrPassword = 'Email hoặc mật khẩu không chính xác.';
+  static final errorSignIn = 'Lỗi đăng nhập:';
+  static final logIn = 'Đăng nhập';
+  static final signUp = 'Chưa có tài khoản? Đăng ký ngay';
+  static final password = 'Mật khẩu';
+  static final email = 'Email';
+  static final register = 'Đăng ký';
+  static final wrongConfirmPassword = "Mật khẩu xác nhận không khớp!";
+  static final emptyInfo = "Vui lòng điền đầy đủ thông tin!";
+  static final registerSucess = "Đăng ký tài khoản thành công!";
+  static final confirmPassword = "Nhập lai mât khẩu";
+  static final popLogin = "Đã có tài khoản? Đăng nhập";
+  static final logout = "Đăng xuất";
+  static final confirmLogout = "Bạn có chắc chắn muốn đăng xuất tài khoản?";
+  static final descriptionChannel = 'Kênh thông báo nhắc nhở công việc';
+  static final idChannel = 'todo_channel';
+  static final titleChannel = 'To-Do Notifications';
 }

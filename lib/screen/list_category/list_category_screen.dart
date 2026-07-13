@@ -76,11 +76,14 @@ class _ListCategoryScreenState extends State<ListCategoryScreen> {
                         trailing: InkWell(
                           child: Icon(Icons.delete_outline, color: Colors.grey[700]),
                           onTap: () {
-                            AppDialog.showDeleteDialog(
-                                context: context,
-                                onDelete: () async{
-                                  context.read<ListCategoryCubit>().deleteCategory(category.id);
-                                }
+                            AppDialog.showConfirmDialog(
+                              context: context,
+                              onDelete: () async {
+                                context.read<ListCategoryCubit>()
+                                    .deleteCategory(category.id);
+                              },
+                              text: StringUtils.confirmDelete,
+                              content: StringUtils.delete,
                             );
                           },
                         ),

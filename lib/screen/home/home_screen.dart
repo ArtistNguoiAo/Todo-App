@@ -8,6 +8,8 @@ import 'package:todo_app/utils/string_utils.dart';
 import 'package:todo_app/screen/list_category/list_category_screen.dart';
 import 'package:todo_app/screen/list_note/list_note_screen.dart';
 
+import '../../database/firebase_auth.dart';
+import '../../widget/dialog.dart';
 import '../create_category/create_category_screen.dart';
 import '../create_category/cubit/create_category_cubit.dart';
 
@@ -35,6 +37,23 @@ class _HomeScreenState extends State<HomeScreen> {
               ListNoteScreen(),
               ListCategoryScreen(),
             ],
+          ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 12, // Tránh tai thỏ/camera nốt ruồi
+            right: 8,
+            child: IconButton(
+              icon: const Icon(Icons.logout_rounded, color: Colors.black54, size: 28),
+              onPressed: () {
+                AppDialog.showConfirmDialog(
+                  context: context,
+                  onDelete: () async{
+                    await AuthService().signOut();
+                  },
+                  text: StringUtils.logout,
+                  content: StringUtils.confirmLogout,
+                );
+              },
+            ),
           ),
           Positioned(
             bottom: 32,

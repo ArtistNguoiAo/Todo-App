@@ -6,9 +6,11 @@ import '../utils/string_utils.dart';
 
 
 class AppDialog {
-  static Future<void> showDeleteDialog({
+  static Future<void> showConfirmDialog({
     required BuildContext context,
     required Future<void> Function() onDelete,
+    required String text,
+    required String content,
   }) {
     return showDialog(
       context: context,
@@ -21,9 +23,9 @@ class AppDialog {
           ),
           content: SizedBox(
             width: 200,
-            height: 150,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
                   Icons.info,
@@ -31,12 +33,14 @@ class AppDialog {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  StringUtils.confirmDelete,
+                  content,
                   style: AppTextStyles.bodyLarge(),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     DeleteInkWell(
                       bgColor: Colors.grey,
@@ -48,7 +52,7 @@ class AppDialog {
                     const SizedBox(width: 30),
                     DeleteInkWell(
                       bgColor: Colors.red,
-                      text: StringUtils.delete,
+                      text: text,
                       onTap: () async {
                         await onDelete();
                         Navigator.pop(dialogContext);
