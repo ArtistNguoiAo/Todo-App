@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_app/database/firebase_auth.dart';
 import 'package:todo_app/screen/auth/register_cubit/register_cubit.dart';
 import 'package:todo_app/utils/string_utils.dart';
 
