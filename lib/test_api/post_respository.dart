@@ -48,7 +48,7 @@ class PostRepository{
   Future<void> deletePost(int id) async{
     if(id<100){
       try{
-        final response = await http.delete(Uri.parse('$_baseUrl/post/$id'));
+        final response = await http.delete(Uri.parse('$_baseUrl/posts/$id'));
 
         if (response.statusCode < 200 || response.statusCode >= 300) {
           throw Exception('Server trả về mã lỗi: ${response.statusCode}');
@@ -61,6 +61,5 @@ class PostRepository{
       //giả lập độ trễ mạng
       await Future.delayed(Duration(milliseconds: 500));
     }
-
   }
 }

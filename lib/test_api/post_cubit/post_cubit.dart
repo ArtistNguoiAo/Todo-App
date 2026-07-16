@@ -1,13 +1,15 @@
 import 'package:bloc/bloc.dart';
+import 'package:todo_app/database/api_service_dio.dart';
 import 'package:todo_app/test_api/post_model.dart';
-import 'package:todo_app/test_api/post_respository.dart';
+// import 'package:todo_app/test_api/post_respository.dart';
 
 part 'post_state.dart';
 
 class PostCubit extends Cubit<PostState> {
-  final PostRepository respository;
+  // final PostRepository respository;
+  final ApiServiceDio dio;
 
-  PostCubit(this.respository) : super(PostState());
+  PostCubit(this.dio) : super(PostState());
 
   Future<void> fetchPosts() async{
     emit(state.copyWith(
@@ -16,7 +18,7 @@ class PostCubit extends Cubit<PostState> {
       errorMessage: null
     ));
     try{
-      final posts = await respository.getPost();
+      final posts = await dio.getPost();
       emit(state.copyWith(
         isLoading: false,
         isSuccess: true,
@@ -34,7 +36,7 @@ class PostCubit extends Cubit<PostState> {
   Future<void> addPost(String title, String body) async{
     try{
       final newPostData = Post(title: title, body: body, userId: 1);
-      final createdPost = await respository.createPost(newPostData);
+      final createdPost = await dio.createPost(newPostData);
 
       final updatedList = List<Post>.from(state.posts)..insert(0, createdPost);
       emit(state.copyWith(posts: updatedList));
@@ -46,7 +48,7 @@ class PostCubit extends Cubit<PostState> {
   Future<void> editPost(int id, String newTitle, String newBody) async {
     try {
       final postToUpdate = Post(id: id, title: newTitle, body: newBody, userId: 1);
-      final updatedPost = await respository.updatePost(postToUpdate);
+      final updatedPost = await dio.updatePost(postToUpdate);
 
       final updatedList = state.posts.map((post) {
         return post.id == id ? updatedPost : post;
@@ -68,7 +70,7 @@ class PostCubit extends Cubit<PostState> {
 
   Future<void> removePost(int id) async{
     try{
-      await respository.deletePost(id);
+      await dio.deletePost(id);
       final updatedList = state.posts.where((post) => post.id != id).toList();
       emit(state.copyWith(posts: updatedList, errorMessage: null));
     } catch(e){

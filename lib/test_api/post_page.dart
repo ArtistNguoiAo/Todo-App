@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/database/api_service_dio.dart';
 import 'package:todo_app/test_api/post_cubit/post_cubit.dart';
-import 'package:todo_app/test_api/post_respository.dart';
+// import 'package:todo_app/test_api/post_respository.dart';
 import '../utils/string_utils.dart';
 import '../widget/dialog.dart';
 import 'post_model.dart';
@@ -11,12 +12,9 @@ class PostPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => PostRepository(),
-      child: BlocProvider(
-        create: (context) => PostCubit(context.read<PostRepository>())..fetchPosts(),
+    return BlocProvider(
+        create: (context) => PostCubit(ApiServiceDio())..fetchPosts(),
         child: const PostView(),
-      ),
     );
   }
 }
@@ -26,6 +24,8 @@ class PostView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<PostCubit, PostState>(
+  builder: (context, state) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Test call API với http'),
@@ -109,6 +109,8 @@ class PostView extends StatelessWidget {
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
+  },
+);
   }
 
   void _showDialog(BuildContext context, {required PostCubit postCubit, Post? post}) {

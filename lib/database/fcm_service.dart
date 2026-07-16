@@ -21,7 +21,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Nhận thông báo khi app đóng/nền: ${message.notification?.title}");
 
   RemoteNotification? notification = message.notification;
-  AndroidNotification? android = message.notification?.android;
+  // AndroidNotification? android = message.notification?.android;
 
   if (notification != null) {
     await flutterLocalNotificationsPlugin.show(
